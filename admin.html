@@ -1,0 +1,46 @@
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <title>Painel Administrativo - Sistema de Autenticação JWT Seguro</title>
+  <link href='https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css' rel='stylesheet'>
+</head>
+<body class='bg-gray-100 p-8'>
+  <h1 class='text-3xl font-bold text-blue-900 mb-6'>Painel Administrativo</h1>
+  <table class='min-w-full bg-white'>
+    <thead>
+      <tr>
+        <th class='py-2 px-4 border-b'>ID</th>
+        <th class='py-2 px-4 border-b'>Nome</th>
+        <th class='py-2 px-4 border-b'>E-mail</th>
+        <th class='py-2 px-4 border-b'>Premium</th>
+      </tr>
+    </thead>
+    <tbody id='usersTable'>
+    </tbody>
+  </table>
+  <script>
+    async function loadUsers() {
+      const res = await fetch('http://localhost:8000/functions/code_1d71da/admin_panel', {
+         method: 'POST',
+         headers: {'Content-Type': 'application/json'}
+      });
+      const data = await res.json();
+      const tbody = document.getElementById('usersTable');
+      tbody.innerHTML = '';
+      if(data.users && data.users.length > 0){
+         data.users.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td class='py-2 px-4 border-b'>${user.id}</td>
+                            <td class='py-2 px-4 border-b'>${user.name}</td>
+                            <td class='py-2 px-4 border-b'>${user.email}</td>
+                            <td class='py-2 px-4 border-b'>${user.premium ? 'Sim' : 'Não'}</td>`;
+            tbody.appendChild(tr);
+         });
+      } else {
+         tbody.innerHTML = "<tr><td colspan='4' class='py-2 px-4 border-b text-center'>Nenhum usuário encontrado.</td></tr>";
+      }
+    }
+    loadUsers();
+  </script>
+</body>
+</html>
