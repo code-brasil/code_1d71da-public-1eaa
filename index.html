@@ -1,0 +1,42 @@
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <title>Login - Sistema de Autenticação JWT Seguro</title>
+  <link href='https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css' rel='stylesheet'>
+</head>
+<body class='bg-gray-100 flex items-center justify-center h-screen'>
+  <div class='bg-white p-8 rounded shadow-md w-96'>
+    <h1 class='text-2xl font-bold mb-6 text-center text-blue-900'>Login</h1>
+    <form id='loginForm'>
+      <input type='email' id='email' placeholder='E-mail' class='w-full p-2 border border-gray-300 rounded mb-4'>
+      <input type='password' id='password' placeholder='Senha' class='w-full p-2 border border-gray-300 rounded mb-4'>
+      <button type='submit' class='w-full bg-blue-900 text-white p-2 rounded'>Entrar</button>
+    </form>
+    <div class='mt-4 text-center'>
+      <a href='register.html' class='text-blue-600'>Registrar</a> | 
+      <a href='protected.html' class='text-blue-600'>Área Protegida</a>
+    </div>
+    <div id='message' class='mt-4 text-center text-red-500'></div>
+  </div>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      document.getElementById('message').textContent = 'Carregando...';
+      const res = await fetch('http://localhost:8000/functions/code_1d71da/login', {
+         method: 'POST',
+         headers: {'Content-Type': 'application/json'},
+         body: JSON.stringify({email, password})
+      });
+      const data = await res.json();
+      if(data.token){
+         localStorage.setItem('token', data.token);
+         document.getElementById('message').textContent = 'Login realizado com sucesso!';
+      } else {
+         document.getElementById('message').textContent = data.error || 'Erro no login.';
+      }
+    });
+  </script>
+</body>
+</html>
