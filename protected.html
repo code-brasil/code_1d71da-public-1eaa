@@ -1,0 +1,37 @@
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <title>Área Protegida - Sistema de Autenticação JWT Seguro</title>
+  <link href='https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css' rel='stylesheet'>
+</head>
+<body class='bg-gray-100 flex items-center justify-center h-screen'>
+  <div class='bg-white p-8 rounded shadow-md w-96'>
+    <h1 class='text-2xl font-bold mb-6 text-blue-900'>Área Protegida</h1>
+    <p>Conteúdo exclusivo para usuários autenticados.</p>
+    <div id='info' class='mt-4'></div>
+    <div class='mt-4 text-center'>
+      <a href='index.html' class='text-blue-600'>Logout</a>
+    </div>
+  </div>
+  <script>
+    async function verifyToken() {
+      const token = localStorage.getItem('token');
+      if(!token) {
+         document.getElementById('info').textContent = 'Usuário não autenticado.';
+         return;
+      }
+      const res = await fetch('http://localhost:8000/functions/code_1d71da/verify_token', {
+         method: 'POST',
+         headers: {'Content-Type': 'application/json', 'Authorization': token}
+      });
+      const data = await res.json();
+      if(data.payload){
+         document.getElementById('info').textContent = 'Bem-vindo! Token válido.';
+      } else {
+         document.getElementById('info').textContent = data.error || 'Token inválido.';
+      }
+    }
+    verifyToken();
+  </script>
+</body>
+</html>
